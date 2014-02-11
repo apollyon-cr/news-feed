@@ -95,9 +95,7 @@
 
 			$this->out_index = 0;
 			$this->commitTile($this->getRandomTile("all"), 0, 0);
-			//while($this->row_room) {
-			//	$this->selectTileForRow();
-			//}
+			$this->masonTiles();
 		}
 		
 		function getRandomTile($start) {
@@ -125,11 +123,41 @@
 		
 		function masonTiles() {
 			//do until area of tiles = area of panel
+			while(!$this->compArea()){
+				
+			
 			
 		
 			//calcWidth remaining from out_array[beside]
+				$width_remaining = self::PANEL_WIDTH - $this->width_used;
+				
+			
 			//getRandomTile based on remaining
+				switch ($width_remaining) {
+					case 800:
+					case 640:
+						$this->commitTile($this->getRandomTile("all"), 0, $this->out_array[$this->out_index-1]->getWidth());
+						echo $this->out_array[$this->out_index-1]->getLeft();
+						break;
+					case 480:
+					case 320:
+						$this->commitTile($this->getRandomTile("320"), 0, $this->out_array[$this->out_index-1]->getWidth());
+						echo $this->out_array[$this->out_index-1]->getLeft();
+						break;
+					case 160:
+						$this->commitTile($this->getRandomTile("160"), 0, $this->out_array[$this->out_index-1]->getWidth());
+						echo $this->out_array[$this->out_index-1]->getLeft();
+						break;
+					default:
+						echo $this->out_array[$this->out_index-1]->getLeft();
+						break;
+				}
+			
+			
 			//ifRoom -> commitTile() top: 0, left: beside->getWidth + getLeft
+			
+				
+				echo $width_remaining;
 			
 			//calcHeight remaining from out_array[n-1]
 			//getHeight from out_array[n-1]
@@ -139,6 +167,8 @@
 			//else getLeft
 				//calcWidth remaining from out_array[n-1]
 				//ifRoom -> commitTile() top: above->getHeight + getTop, left: 0
+			
+			}
 		}
 		
 		
@@ -181,6 +211,16 @@
 			foreach ($this->out_array as $tile) {
 				$tile->display();
 			}
+		}
+		
+		function compArea() {
+			$panel_area = self::PANEL_WIDTH * self::PANEL_HEIGHT;
+			$tile_area = 0;
+			foreach ($this->out_array as $tile) {
+				$tile_area += ($tile->getWidth() * $tile->getHeight());
+			}
+			if ($panel_area <= $tile_area) return true;
+			else return false;
 		}
 		
 		function getUsed() {
